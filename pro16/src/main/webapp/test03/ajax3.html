@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript">
+	function fn_process() {
+		//t_id의 text에 입력한 id를 가져옴
+		var _id = $("#t_id").val();
+		//id가 비어있으면 출력
+		if(_id == ""){
+			alert("id를 입력하세요");
+			return;
+		}
+		$.ajax({
+			//post 방식으로 전송
+			type:"post",
+			//비동기식으로 처리
+			async:true,
+			//응답 데이터를 텍스트로 지정
+			dataType:"text",
+			//전송할 서블릿 지정
+			url:"http://localhost:8080/pro16/mem",
+			//id를 서블릿으로 전송
+			data:{id: _id},
+			//전송과 응답이 성공했을 경우 수행
+			success:function(data, textStatus){
+				//전달받은 결과가 false면 출력
+				if(data == 'usable'){
+					$('#message').text("사용할 수 있는 ID입니다.");
+					//prop는 속성을 설정한다, 사용 가능한 ID면 버튼을 비활성화 시킴
+					$('#btn_duplicate').prop("disabled","true");
+				//전달받은 결과가 true면 출력
+				} else {
+					$('#message').text("사용할 수 없는 ID입니다.");
+				}
+			},
+			//작업 중 오류가 발생했을 경우 수행
+			error:function(data, textStatus){
+				alert("에러가 발생했습니다.");
+			}
+		});
+	}
+</script>
+</head>
+<body>
+	<input type="text" id="t_id">
+	<input type="button" id="btn_duplicate" value="ID 중복체크하기" onclick="fn_process()"><br><br>
+	<div id="message"></div>
+</body>
+</html>
